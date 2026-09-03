@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.pocbank</groupId>
+  <artifactId>pocbank</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>POCBANK</name>
+  <description>
+    Current-account core API built to learn DDD, TDD, hexagonal architecture,
+    Quarkus and the JVM together, one painful decision at a time.
+  </description>
+
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.11.4</junit.version>
+    <surefire.version>3.5.2</surefire.version>
+  </properties>
+
+  <!--
+    Phase 0: only the domain module exists. Modules below are added as each
+    phase in section 5 of the project outline is actually reached — not
+    scaffolded ahead of need:
+
+      pocbank-application               (Phase 1 - ports)
+      pocbank-adapter-in-rest           (Phase 2 - Quarkus REST)
+      pocbank-adapter-out-memory        (Phase 1 - in-memory repository)
+      pocbank-adapter-out-persistence   (Phase 3 - Postgres)
+  -->
+  <modules>
+    <module>pocbank-domain</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
