@@ -15,4 +15,5 @@ Thumbs.db
 
 # Study progress (private)
 study/
+interview/
 .claude/settings.local.json
