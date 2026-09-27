@@ -57,6 +57,36 @@ that's the point.
 _Entries go here as choices get made — what was tried, what hurt, why it
 changed._
 
+### 1. `Money`: normalize scale and round with `HALF_EVEN`
+
+**Context:** `Money` is a `record`, so its generated `equals` delegates to
+`BigDecimal.equals`, which compares value *and* scale. `10.0 BRL` and
+`10.00 BRL` were therefore not equal — caught by
+`shouldBeEqualWhenSameAmountWithDifferentScale`.
+
+**Decision:** the compact constructor normalizes the amount to the
+currency's scale (`currency.getDefaultFractionDigits()`: 2 for BRL, 0 for
+JPY) using `RoundingMode.HALF_EVEN`. The generated `equals`/`hashCode` then
+work as-is.
+
+**Alternatives considered:**
+- Override `equals` with `compareTo` — rejected: `hashCode` would also have
+  to be overridden consistently (`10.0` and `10.00` hash differently), and
+  that is easy to get wrong, breaking `HashSet`/`HashMap`.
+- `HALF_UP` — tried first because it was the simplest. Rejected: it always
+  rounds ties (…5) up, so over many operations the error accumulates in one
+  direction (rounding bias). `HALF_EVEN` (banker's rounding) rounds ties to
+  the even neighbour — half up, half down — so the error cancels out.
+  `shouldRoundToCurrencyScale` pins it: `10.005 → 10.00`, `10.015 → 10.02`.
+
+**Consequences / open questions:**
+- Creating `Money` with more digits than the currency allows silently
+  rounds: `10.005` loses half a cent without warning. Should extra precision
+  be rejected instead? Revisit when real operations (interest, fees,
+  conversion) show up.
+- Scale comes from `Currency`, so every currency gets the right precision
+  without special cases.
+
 ## Current phase
 
 **Phase 0 — pure domain, no framework.** No Quarkus, no database, no REST,
