@@ -12,3 +12,7 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+
+# Study progress (private)
+study/
+.claude/settings.local.json
